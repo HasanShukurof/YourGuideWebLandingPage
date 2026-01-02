@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'YourGuide - Azərbaycanda Səyahət Rehbərin',
+      title: 'YourGuide - Your Travel Guide in Azerbaijan',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -35,25 +35,82 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final ScrollController _scrollController = ScrollController();
+  String _currentLanguage = 'az'; // 'az' or 'en'
 
   void _launchURL(String url) {
     html.window.open(url, '_blank');
   }
 
+  void _toggleLanguage() {
+    setState(() {
+      _currentLanguage = _currentLanguage == 'az' ? 'en' : 'az';
+    });
+  }
+
+  String _getText(String azText, String enText) {
+    return _currentLanguage == 'az' ? azText : enText;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            _buildHeroSection(context),
-            _buildFeaturesSection(context),
-            _buildShowcaseSection(context),
-            _buildDownloadSection(context),
-            _buildFooter(context),
-          ],
-        ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                _buildHeroSection(context),
+                _buildFeaturesSection(context),
+                _buildShowcaseSection(context),
+                _buildDownloadSection(context),
+                _buildFooter(context),
+              ],
+            ),
+          ),
+          // Language Toggle Button
+          Positioned(
+            top: 20,
+            right: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: Colors.white.withOpacity(0.3)),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _toggleLanguage,
+                  borderRadius: BorderRadius.circular(30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _currentLanguage == 'az' ? '🇦🇿 AZ' : '🇬🇧 EN',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.language,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -114,7 +171,10 @@ class _LandingPageState extends State<LandingPage> {
         ),
         const SizedBox(height: 24),
         Text(
-          'Azərbaycanda Şəxsi Turistik Rehbəriniz',
+          _getText(
+            'Azərbaycanda Şəxsi Turistik Rehbəriniz',
+            'Your Personal Travel Guide in Azerbaijan',
+          ),
           style: TextStyle(
             fontSize: isMobile ? 20 : 28,
             color: Colors.white.withOpacity(0.95),
@@ -124,7 +184,10 @@ class _LandingPageState extends State<LandingPage> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Bakı və Azərbaycanın gizli incilərini kəşf edin. Xarici turistlər üçün hazırlanmış peşəkar rehber tətbiqi.',
+          _getText(
+            'Bakı və Azərbaycanın gizli incilərini kəşf edin. Xarici turistlər üçün hazırlanmış peşəkar rehber tətbiqi.',
+            'Discover Baku and Azerbaijan\'s hidden gems. Professional guide app designed for foreign tourists.',
+          ),
           style: TextStyle(
             fontSize: isMobile ? 16 : 18,
             color: Colors.white.withOpacity(0.9),
@@ -154,21 +217,123 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _buildHeroImage(BuildContext context, bool isMobile) {
     return Container(
-      height: isMobile ? 300 : 500,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 40,
-            offset: const Offset(0, 20),
+      height: isMobile ? 400 : 600,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Phone mockup with realistic design
+          Container(
+            width: isMobile ? 200 : 300,
+            height: isMobile ? 400 : 600,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(isMobile ? 30 : 45),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 60,
+                  spreadRadius: 10,
+                  offset: const Offset(0, 20),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // Phone body
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(isMobile ? 30 : 45),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: isMobile ? 8 : 12,
+                    ),
+                  ),
+                ),
+                // Screen content
+                Positioned.fill(
+                  child: Padding(
+                    padding: EdgeInsets.all(isMobile ? 12 : 18),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            const Color(0xFF0099CC),
+                            const Color(0xFF00C4FF),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(isMobile ? 22 : 33),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // App logo on screen
+                          Container(
+                            width: isMobile ? 80 : 120,
+                            height: isMobile ? 80 : 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(isMobile ? 20 : 30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.explore,
+                              size: isMobile ? 50 : 70,
+                              color: const Color(0xFF0099CC),
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? 20 : 30),
+                          Text(
+                            'YourGuide',
+                            style: TextStyle(
+                              fontSize: isMobile ? 20 : 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: isMobile ? 8 : 12),
+                          Text(
+                            _getText('Kəşf Edin', 'Explore'),
+                            style: TextStyle(
+                              fontSize: isMobile ? 14 : 18,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Notch (Dynamic Island style)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: isMobile ? 90 : 135,
+                      height: isMobile ? 25 : 35,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(isMobile ? 15 : 20),
+                          bottomRight: Radius.circular(isMobile ? 15 : 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-      child: Icon(
-        Icons.phone_iphone,
-        size: isMobile ? 200 : 400,
-        color: Colors.white.withOpacity(0.9),
       ),
     );
   }
